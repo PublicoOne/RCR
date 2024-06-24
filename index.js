@@ -15,10 +15,10 @@ const requireApiKey = (req, res, next) => {
     next();
 };
 
-// Aplicar middleware solo a rutas que requieran autenticación
+// Ruta que requiere autenticación y maneja POST
 app.post('/ruta-que-requiere-autenticacion', requireApiKey, (req, res) => {
     // Aquí va el código para manejar la solicitud POST segura
-    res.json({ message: 'Operación POST exitosa' });
+    res.json({ message: 'Operación POST exitosa', data: req.body });
 });
 
 // Puerto de escucha
