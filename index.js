@@ -16,7 +16,7 @@ const requireApiKey = (req, res, next) => {
 };
 
 // Ruta que requiere autenticación y maneja POST
-app.post('/ruta-que-requiere-autenticacion', requireApiKey, (req, res) => {
+app.post('/', requireApiKey, (req, res) => {
     // Aquí va el código para manejar la solicitud POST segura
     res.json({ message: 'Operación POST exitosa', data: req.body });
 });
