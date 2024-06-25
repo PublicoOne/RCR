@@ -53,7 +53,7 @@ app.post('/', requireApiKey, async (req, res) => {
             'INSERT INTO tu_tabla (parametro1, parametro2) VALUES ($1, $2) RETURNING *',
             [parametro1, parametro2]
         );
-        res.json({ message: 'Operación POST exitosa', data: result.rows[0] });
+        res.json({ message: 'Operación POST exitosa', data: req.body });
     } catch (err) {
         console.error('Error:', err.message);
         res.status(500).json({ error: 'Error al guardar en la base de datos' });
