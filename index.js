@@ -45,20 +45,29 @@ const requireApiKey = (req, res, next) => {
 
 // Ruta que requiere autenticación y maneja POST
 app.post('/', requireApiKey, async (req, res) => {
-    const { parametro1 } = req.body;  // Extraer el valor específico de req.body
-    const parametro2 = 'true';
+    const jsonData = req.body; // Obtener el JSON completo desde req.body
+
     try {
-        // Guardar los datos en la base de datos
-        const result = await pool.query(
-            'INSERT INTO tu_tabla (parametro1, parametro2) VALUES ($1, $2) RETURNING *',
-            [parametro1, parametro2]
-        );
-        res.json({ message: 'Operación POST exitosa', data: req.body });
+        // Recorrer el array de objetos JSON y guardar cada uno en la base de datos
+        for (let obj of jsonData) {
+            const { parent, class: className, name, attributes } = obj;
+
+            // Guardar los datos en la base de datos
+            const result = await pool.query(
+                'INSERT INTO tu_tabla (parent, class, name, attributes) VALUES ($1, $2, $3, $4) RETURNING *',
+                [parent, className, name, JSON.stringify(attributes)]
+            );
+
+            console.log('Insertado en la base de datos:', result.rows[0]);
+        }
+
+        res.json({ message: 'Operación POST exitosa', data: jsonData });
     } catch (err) {
         console.error('Error:', err.message);
         res.status(500).json({ error: 'Error al guardar en la base de datos' });
     }
 });
+
 
 // Nueva ruta para consultar los datos guardados
 app.get('/datos', requireApiKey, async (req, res) => {
