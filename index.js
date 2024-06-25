@@ -45,7 +45,7 @@ const requireApiKey = (req, res, next) => {
 
 // Ruta que requiere autenticación y maneja POST
 app.post('/', requireApiKey, async (req, res) => {
-    const { parametro1 } = req.body;  // Extraer el valor específico de req.body
+    const { parametro1 } = res;  // Extraer el valor específico de req.body
     const parametro2 = 'true';
     try {
         // Guardar los datos en la base de datos
