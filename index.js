@@ -15,6 +15,26 @@ const pool = new Pool({
     port: 5432, // El puerto por defecto de PostgreSQL es 5432
 });
 
+// Crear la tabla si no existe
+const createTableIfNotExists = async () => {
+    const createTableQuery = `
+        CREATE TABLE IF NOT EXISTS tu_tabla (
+            id SERIAL PRIMARY KEY,
+            parametro1 VARCHAR(255),
+            parametro2 VARCHAR(255)
+        );
+    `;
+    try {
+        await pool.query(createTableQuery);
+        console.log("Tabla 'tu_tabla' verificada/existente");
+    } catch (err) {
+        console.error('Error al crear/verificar la tabla:', err.message);
+    }
+};
+
+// Ejecutar la función para crear la tabla
+createTableIfNotExists();
+
 const requireApiKey = (req, res, next) => {
     const apiKey = req.headers['x-api-key'];
     if (!apiKey || apiKey !== 'tu_llave_secreta') {
@@ -26,7 +46,7 @@ const requireApiKey = (req, res, next) => {
 // Ruta que requiere autenticación y maneja POST
 app.post('/', requireApiKey, async (req, res) => {
     const { parametro1 } = req.body;  // Extraer el valor específico de req.body
-    const parametro2 = req.body;
+    const parametro2 = 'true';
     try {
         // Guardar los datos en la base de datos
         const result = await pool.query(
