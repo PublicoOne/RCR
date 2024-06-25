@@ -40,6 +40,18 @@ app.post('/', requireApiKey, async (req, res) => {
     }
 });
 
+// Nueva ruta para consultar los datos guardados
+app.get('/datos', requireApiKey, async (req, res) => {
+    try {
+        // Consulta para obtener todos los datos de la tabla
+        const result = await pool.query('SELECT * FROM tu_tabla');
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Error al consultar la base de datos' });
+    }
+});
+
 // Puerto de escucha
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
