@@ -35,7 +35,7 @@ app.post('/', requireApiKey, async (req, res) => {
         );
         res.json({ message: 'Operación POST exitosa', data: result.rows[0] });
     } catch (err) {
-        console.error(err);
+        console.error('Error:', err.message);
         res.status(500).json({ error: 'Error al guardar en la base de datos' });
     }
 });
@@ -47,7 +47,7 @@ app.get('/datos', requireApiKey, async (req, res) => {
         const result = await pool.query('SELECT * FROM tu_tabla');
         res.json(result.rows);
     } catch (err) {
-        console.error(err);
+        console.error('Error:', err.message);
         res.status(500).json({ error: 'Error al consultar la base de datos' });
     }
 });
