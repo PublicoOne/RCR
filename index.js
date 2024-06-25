@@ -48,18 +48,13 @@ app.post('/', requireApiKey, async (req, res) => {
     const jsonData = req.body; // Obtener el JSON completo desde req.body
 
     try {
-        // Recorrer el array de objetos JSON y guardar cada uno en la base de datos
-        for (let obj of jsonData) {
-            const { parent, class: className, name, attributes } = obj;
+        // Guardar el JSON completo en la base de datos
+        const result = await pool.query(
+            'INSERT INTO tu_tabla (json_column) VALUES ($1) RETURNING *',
+            [JSON.stringify(jsonData)]
+        );
 
-            // Guardar los datos en la base de datos
-            const result = await pool.query(
-                'INSERT INTO tu_tabla (parent, class, name, attributes) VALUES ($1, $2, $3, $4) RETURNING *',
-                [parent, className, name, JSON.stringify(attributes)]
-            );
-
-            console.log('Insertado en la base de datos:', result.rows[0]);
-        }
+        console.log('Insertado en la base de datos:', result.rows[0]);
 
         res.json({ message: 'Operación POST exitosa', data: jsonData });
     } catch (err) {
@@ -67,6 +62,7 @@ app.post('/', requireApiKey, async (req, res) => {
         res.status(500).json({ error: 'Error al guardar en la base de datos' });
     }
 });
+
 
 
 // Nueva ruta para consultar los datos guardados
